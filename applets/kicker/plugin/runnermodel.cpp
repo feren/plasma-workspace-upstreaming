@@ -256,6 +256,7 @@ void RunnerModel::matchesChanged(const QList<Plasma::QueryMatch> &matches)
 
         QList<Plasma::QueryMatch> matches;
 
+        // TODO This is fragile when enabling/disableing runners
         foreach (const QString &runnerId, m_runners) {
             matches.append(matchesForRunner.take(runnerId));
         }
@@ -319,7 +320,11 @@ void RunnerModel::createManager()
     if (!m_runnerManager) {
         // The config from KSharedConfig::openConfig() is used by default
         m_runnerManager = new Plasma::RunnerManager(this);
-        m_runnerManager->setAllowedRunners(m_runners);
+        if (m_runners.isEmpty()) {
+            m_runnerManager->enableKNotifyPluginWatcher();
+        } else {
+            m_runnerManager->setAllowedRunners(m_runners);
+        }
         connect(m_runnerManager, &Plasma::RunnerManager::matchesChanged,
                 this, &RunnerModel::matchesChanged);
     }
