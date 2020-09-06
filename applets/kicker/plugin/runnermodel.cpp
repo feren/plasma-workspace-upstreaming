@@ -207,6 +207,14 @@ void RunnerModel::startQuery()
     createManager();
 
     m_runnerManager->launchQuery(m_query);
+    // The names are still used for the grouping, if there are no runners specified the manager decides which
+    // runners to load based on the config
+    if (m_runners.isEmpty()) {
+        const auto runnerList = m_runnerManager->runners();
+        for (const auto *runner : runnerList) {
+            m_runners << runner->id();
+        }
+    }
 }
 
 void RunnerModel::matchesChanged(const QList<Plasma::QueryMatch> &matches)
@@ -309,7 +317,8 @@ void RunnerModel::matchesChanged(const QList<Plasma::QueryMatch> &matches)
 void RunnerModel::createManager()
 {
     if (!m_runnerManager) {
-        m_runnerManager = new Plasma::RunnerManager(this); // FIXME: Which KConfigGroup is this using now?
+        // The config from KSharedConfig::openConfig() is used by default
+        m_runnerManager = new Plasma::RunnerManager(this);
         m_runnerManager->setAllowedRunners(m_runners);
         connect(m_runnerManager, &Plasma::RunnerManager::matchesChanged,
                 this, &RunnerModel::matchesChanged);
