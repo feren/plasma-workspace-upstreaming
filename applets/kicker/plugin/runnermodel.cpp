@@ -318,8 +318,7 @@ void RunnerModel::matchesChanged(const QList<Plasma::QueryMatch> &matches)
 void RunnerModel::createManager()
 {
     if (!m_runnerManager) {
-        // The config from KSharedConfig::openConfig() is used by default
-        m_runnerManager = new Plasma::RunnerManager(this);
+        m_runnerManager = new Plasma::RunnerManager(QStringLiteral("krunnerrc"), this);
         if (m_runners.isEmpty()) {
             m_runnerManager->enableKNotifyPluginWatcher();
         } else {
