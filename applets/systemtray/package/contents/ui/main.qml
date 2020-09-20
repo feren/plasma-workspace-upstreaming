@@ -81,14 +81,6 @@ MouseArea {
         }
     }
 
-    Connections {
-        target: plasmoid.configuration
-
-        function onExtraItemsChanged() {
-            plasmoid.nativeInterface.allowedPlasmoids = plasmoid.configuration.extraItems
-        }
-    }
-
     CurrentItemHighLight {
         readonly property bool visibleAppletActivated: root.activeApplet && root.activeApplet.parent && root.activeApplet.parent.inVisibleLayout
         parent: visibleAppletActivated ? root.activeApplet.parent : root
