@@ -985,8 +985,14 @@ bool PanelView::containmentContainsPosition(const QPointF &point) const
     if (!containmentItem) {
         return false;
     }
+    int left = this->rootObject()->property("leftMargin").toInt();
+    int right = this->rootObject()->property("rightMargin").toInt();
+    int top = this->rootObject()->property("topMargin").toInt();
+    int bottom = this->rootObject()->property("bottomMargin").toInt();
 
-    return QRectF(containmentItem->mapToScene(QPoint(0,0)), QSizeF(containmentItem->width(), containmentItem->height())).contains(point);
+    return QRectF(
+        containmentItem->mapToScene(QPoint(left,top)), 
+        QSizeF(containmentItem->width()-left-right, containmentItem->height()-top-bottom)).contains(point);
 }
 
 QPointF PanelView::positionAdjustedForContainment(const QPointF &point) const
@@ -999,8 +1005,13 @@ QPointF PanelView::positionAdjustedForContainment(const QPointF &point) const
 
     QRectF containmentRect(containmentItem->mapToScene(QPoint(0,0)), QSizeF(containmentItem->width(), containmentItem->height()));
 
-    return QPointF(qBound(containmentRect.left() + 2, point.x(), containmentRect.right() - 2),
-                   qBound(containmentRect.top() + 2, point.y(), containmentRect.bottom() - 2));
+    int left = this->rootObject()->property("leftMargin").toInt();
+    int right = this->rootObject()->property("rightMargin").toInt();
+    int top = this->rootObject()->property("topMargin").toInt();
+    int bottom = this->rootObject()->property("bottomMargin").toInt();
+	
+	return QPointF(qBound(containmentRect.left() + left, point.x(), containmentRect.right() - right),
+                   qBound(containmentRect.top() + top, point.y(), containmentRect.bottom() - bottom));
 }
 
 void PanelView::updateMask()
